@@ -1,0 +1,82 @@
+CREATE DATABASE `ecommerce` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+CREATE TABLE `address` (
+  `address_id` int(11) NOT NULL AUTO_INCREMENT,
+  `street` varchar(45) NOT NULL,
+  `city` varchar(45) NOT NULL,
+  `state` varchar(45) NOT NULL,
+  `zipcode` varchar(45) NOT NULL,
+  PRIMARY KEY (`address_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `billing_address` (
+  `billing_user_id` int(11) NOT NULL,
+  `billing_address_id` int(11) NOT NULL,
+  KEY `address_id_idx` (`billing_address_id`),
+  KEY `buser_id` (`billing_user_id`),
+  CONSTRAINT `baddress_id` FOREIGN KEY (`billing_address_id`) REFERENCES `address` (`address_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `buser_id` FOREIGN KEY (`billing_user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cart` (
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  KEY `product_id_idx` (`product_id`),
+  KEY `cart_user_id` (`user_id`),
+  CONSTRAINT `cart_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `category` (
+  `category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(45) NOT NULL,
+  PRIMARY KEY (`category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `credit_card` (
+  `credit_card_id` int(11) NOT NULL AUTO_INCREMENT,
+  `card_number` varchar(45) NOT NULL,
+  `name_on_card` varchar(45) NOT NULL,
+  `expiration_date` varchar(45) NOT NULL,
+  `card_type` varchar(45) NOT NULL,
+  PRIMARY KEY (`credit_card_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `credit_card_lookup` (
+  `look_up_user_id` int(11) NOT NULL,
+  `look_up_credit_card_id` int(11) NOT NULL,
+  PRIMARY KEY (`look_up_user_id`,`look_up_credit_card_id`),
+  KEY `credit_card_id_idx` (`look_up_credit_card_id`),
+  CONSTRAINT `lkcredit_card_id` FOREIGN KEY (`look_up_credit_card_id`) REFERENCES `credit_card` (`credit_card_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `lkuser_id` FOREIGN KEY (`look_up_user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `product` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_name` varchar(45) NOT NULL,
+  `product_description` varchar(200) NOT NULL,
+  `category_id` int(11) NOT NULL,
+  `img_path` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`product_id`),
+  KEY `category_id_idx` (`category_id`),
+  CONSTRAINT `category_id` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `shipping_address` (
+  `shipping_user_id` int(11) NOT NULL,
+  `shipping_address_id` int(11) NOT NULL,
+  KEY `address_id_idx` (`shipping_address_id`),
+  KEY `suser_id` (`shipping_user_id`),
+  CONSTRAINT `saddress_id` FOREIGN KEY (`shipping_address_id`) REFERENCES `address` (`address_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `suser_id` FOREIGN KEY (`shipping_user_id`) REFERENCES `user` (`user_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(45) NOT NULL,
+  `last_name` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
